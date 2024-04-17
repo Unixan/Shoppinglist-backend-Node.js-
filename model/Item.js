@@ -5,7 +5,7 @@ const itemSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  Unit: {
+  unit: {
     type: String,
     required: true,
     default: 'Pcs',

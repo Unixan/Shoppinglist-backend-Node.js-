@@ -1,15 +1,26 @@
 const mongoose = require('mongoose');
-const { itemSchema } = require('./Item');
+const { productSchema } = require('./product');
 
 const shoppingListSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
+  isPrivate: {
+    type: Boolean,
+    required: true,
+  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    required: false,
+    required: true,
   },
+  users: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
+    },
+  ],
+  products: [productSchema],
 });
 
 const ShoppingList = mongoose.model('shoppingList', shoppingListSchema);

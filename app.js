@@ -4,7 +4,10 @@ const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
-const dbURI = 'mongodb://localhost:27017/';
+//middleware
+app.use(express.json());
+
+const dbURI = 'mongodb://localhost:27017/shoppinglist';
 
 mongoose
   .connect(dbURI)

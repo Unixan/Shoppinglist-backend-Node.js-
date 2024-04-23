@@ -38,19 +38,27 @@ userSchema.statics.login = async function (email, password) {
     if (auth) {
       return user._id;
     }
-    throw Error('Incorrect password');
+    throw Error('passwordError');
   }
-  throw Error("User doesn't exist");
+  throw Error('emailError');
 };
 
 userSchema.statics.addShoppingList = async function (userId, name) {
-  const user = await this.findById(userId);
-  if (user) {
-    user.shoppingLists.push({ name, isPrivate: true });
-    user.save();
-    return 'Shoppinglist added to user ' + user._id;
+  try {
+    const user = await this.findById(userId);
+
+    if (user) {
+      user.shoppingLists.push({ name, isPrivate: true });
+      await user.save();
+      return 'Shoppinglist added to user ' + user._id;
+    } else {
+      throw Error('userError');
+    }
+  } catch (err) {
+    if (err instanceof mongoose.Error.ValidationError)
+      throw Error('validationError');
+    else throw Error('createError');
   }
-  throw Error('User not found');
 };
 
 const User = mongoose.model('user', userSchema);

@@ -7,4 +7,8 @@ const router = Router();
 
 router.post('/shoppinglist', newShoppingList_post);
 
+router.delete('/shoppinglist', (req, res) => {
+  res.status(200).json({ status: 'delete' });
+});
+
 module.exports = router;

@@ -8,6 +8,7 @@ const shoppingListSchema = new mongoose.Schema({
   },
   isPrivate: {
     type: Boolean,
+    default: false,
     required: true,
   },
   users: [
@@ -18,6 +19,15 @@ const shoppingListSchema = new mongoose.Schema({
   ],
   products: [productSchema],
 });
+
+shoppingListSchema.statics.addShoppingList = async function (userId, name) {
+  const res = await this.create({ name, users: [userId] });
+  if (res) {
+    console.log(res);
+    return res._id;
+  }
+  throw Error("Couldn't create list");
+};
 
 const ShoppingList = mongoose.model('shoppingList', shoppingListSchema);
 

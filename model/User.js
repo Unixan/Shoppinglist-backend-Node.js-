@@ -21,7 +21,6 @@ const userSchema = new mongoose.Schema({
   },
   shoppingLists: {
     type: [shoppingListSchema],
-    // type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'shoppingList' }],
     default: [],
   },
 });
@@ -42,6 +41,16 @@ userSchema.statics.login = async function (email, password) {
     throw Error('Incorrect password');
   }
   throw Error("User doesn't exist");
+};
+
+userSchema.statics.addShoppingList = async function (userId, name) {
+  const user = await this.findById(userId);
+  if (user) {
+    user.shoppingLists.push({ name, isPrivate: true });
+    user.save();
+    return 'Shoppinglist added to user ' + user._id;
+  }
+  throw Error('User not found');
 };
 
 const User = mongoose.model('user', userSchema);

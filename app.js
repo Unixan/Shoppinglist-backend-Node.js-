@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
+const appRoutes = require('./routes/appRoutes');
 
 const app = express();
 
@@ -18,3 +19,4 @@ mongoose
   .catch((err) => console.log(err));
 
 app.use(authRoutes);
+app.use(appRoutes);

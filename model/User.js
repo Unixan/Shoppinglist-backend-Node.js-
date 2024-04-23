@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { isEmail } = require('validator');
 const bcrypt = require('bcrypt');
+const { shoppingListSchema } = require('./ShoppingList');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -19,7 +20,8 @@ const userSchema = new mongoose.Schema({
     minLength: [8, 'Must be atleast 8 chars'],
   },
   shoppingLists: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'shoppingList' }],
+    type: [shoppingListSchema],
+    // type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'shoppingList' }],
     default: [],
   },
 });

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { productSchema } = require('./product');
+const { productSchema } = require('./Product');
 
 const shoppingListSchema = new mongoose.Schema({
   name: {
@@ -8,10 +8,6 @@ const shoppingListSchema = new mongoose.Schema({
   },
   isPrivate: {
     type: Boolean,
-    required: true,
-  },
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
     required: true,
   },
   users: [
@@ -25,5 +21,5 @@ const shoppingListSchema = new mongoose.Schema({
 
 const ShoppingList = mongoose.model('shoppingList', shoppingListSchema);
 
-module.exports.ShoppingList = ShoppingList;
+module.exports = ShoppingList;
 module.exports.shoppingListSchema = shoppingListSchema;

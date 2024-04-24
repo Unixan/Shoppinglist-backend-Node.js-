@@ -55,9 +55,41 @@ userSchema.statics.addShoppingList = async function (userId, name) {
       throw Error('userError');
     }
   } catch (err) {
-    if (err instanceof mongoose.Error.ValidationError)
-      throw Error('validationError');
-    else throw Error('createError');
+    if (
+      err instanceof mongoose.Error.ValidationError ||
+      err instanceof mongoose.Error.CastError
+    )
+      throw Error('ValidationError');
+    else throw Error('error');
+  }
+};
+
+userSchema.statics.deleteShoppingList = async function (userId, listId) {
+  try {
+    const user = await this.findById(userId);
+    if (user) {
+      const index = user.shoppingLists.findIndex((list) =>
+        list._id.equals(listId)
+      );
+      if (index !== -1) {
+        user.shoppingLists.splice(index, 1);
+        await user.save();
+        return 'Shoppinglist deleted';
+      } else {
+        throw Error('listError');
+      }
+    } else {
+      throw Error('userError');
+    }
+  } catch (err) {
+    if (
+      err instanceof mongoose.Error.ValidationError ||
+      err instanceof mongoose.Error.CastError
+    )
+      throw Error('ValidationError');
+    else {
+      throw Error(err.message);
+    }
   }
 };
 

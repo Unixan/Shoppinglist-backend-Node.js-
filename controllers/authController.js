@@ -1,13 +1,13 @@
 const User = require('../model/User');
 
 const handleErrors = (err) => {
-  let errors = { email: '', password: '' };
+  let errors = { message: '' };
 
-  if (err.code === 11000) errors.email = 'Email unavailable';
+  if (err.code === 11000) errors.message = 'Email unavailable';
 
-  if (err.message === 'emailError') errors.email = "User doesn't exist";
+  if (err.message === 'emailError') errors.message = "User doesn't exist";
 
-  if (err.message === 'passwordError') errors.password = 'Wrong password';
+  if (err.message === 'passwordError') errors.message = 'Wrong password';
 
   return errors;
 };
@@ -29,7 +29,7 @@ module.exports.signup_post = async (req, res) => {
     const user = await User.create({ email, userName, password });
     res.status(201).json({ user });
   } catch (err) {
-    const errors = handleErrors(err);
-    res.status(400).json({ errors });
+    const error = handleErrors(err);
+    res.status(400).json(error);
   }
 };

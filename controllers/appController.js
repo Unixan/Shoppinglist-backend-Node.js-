@@ -1,5 +1,5 @@
 const User = require('../model/User');
-const ShoppingList = require('../model/ShoppingList');
+const { ShoppingList } = require('../model/ShoppingList');
 
 const handleErrors = (err) => {
   let error = { message: '' };
@@ -39,6 +39,7 @@ module.exports.removeShoppingList_delete = async (req, res) => {
     }
     res.status(202).json({ result });
   } catch (err) {
+    console.log(err.message);
     const error = handleErrors(err);
     res.status(404).json(error);
   }

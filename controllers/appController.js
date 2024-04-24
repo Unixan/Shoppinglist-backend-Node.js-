@@ -1,17 +1,9 @@
 const User = require('../model/User');
 const { ShoppingList } = require('../model/ShoppingList');
 
-const handleErrors = (err) => {
-  let error = { message: '' };
-  if (err.message === 'userError') error.message = 'User not found';
-  if (err.message === 'listError') error.message = 'Shoppinglist not found';
-  if (err.message === 'ValidationError') error.message = 'Validation failed';
-  if (err.message === 'error') error.message = 'Unexpected error';
+const errorHandler = require('../middleware/errorHandler');
 
-  return error;
-};
-
-module.exports.newShoppingList_post = async (req, res) => {
+module.exports.newShoppingList_post = async (req, res, next) => {
   const { name, isPrivate, user } = req.body;
   try {
     let result;
@@ -22,13 +14,12 @@ module.exports.newShoppingList_post = async (req, res) => {
     }
     res.status(201).json({ message: 'Shopping list created', result });
   } catch (err) {
-    console.log(err.message);
-    const error = handleErrors(err);
-    res.status(400).json({ error });
+    console.log(err);
+    errorHandler(err, req, res);
   }
 };
 
-module.exports.removeShoppingList_delete = async (req, res) => {
+module.exports.removeShoppingList_delete = async (req, res, next) => {
   const { user, isPrivate, shoppingListId } = req.body;
   try {
     let result;
@@ -39,8 +30,7 @@ module.exports.removeShoppingList_delete = async (req, res) => {
     }
     res.status(202).json({ result });
   } catch (err) {
-    console.log(err.message);
-    const error = handleErrors(err);
-    res.status(404).json(error);
+    console.log(err);
+    errorHandler(err, req, res);
   }
 };

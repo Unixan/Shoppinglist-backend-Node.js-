@@ -22,3 +22,15 @@ module.exports.signup_post = async (req, res) => {
     errorHandler(err, req, res);
   }
 };
+
+module.exports.deleteUser = async (req, res) => {
+  const userToFind = req.params.id;
+  try {
+    const respsonse = await User.deleteUser(userToFind);
+    res.status(200).json(respsonse);
+    console.log(userToFind);
+  } catch (err) {
+    errorHandler(err, req, res);
+    console.log(err.message);
+  }
+};

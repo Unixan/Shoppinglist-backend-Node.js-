@@ -21,8 +21,8 @@ const shoppingListSchema = new mongoose.Schema({
 });
 
 shoppingListSchema.statics.addShoppingList = async function (userId, name) {
+  if (!validateId(userId || !name)) throw Error('ValidationError');
   const res = await this.create({ name, users: [userId] });
-
   if (res) {
     return res._id;
   }
@@ -33,10 +33,7 @@ shoppingListSchema.statics.deleteShoppingList = async function (
   userId,
   listId
 ) {
-  if (
-    !mongoose.Types.ObjectId.isValid(userId) ||
-    !mongoose.Types.ObjectId.isValid(listId)
-  ) {
+  if (!validateId(userId) || !validateId(listId)) {
     throw Error('ValidationError');
   }
   const list = await this.findOne({ _id: listId });
@@ -50,6 +47,10 @@ shoppingListSchema.statics.deleteShoppingList = async function (
   } else {
     throw Error('listError');
   }
+};
+
+const validateId = (id) => {
+  return mongoose.Types.ObjectId.isValid(id);
 };
 
 const ShoppingList = mongoose.model('shoppingList', shoppingListSchema);

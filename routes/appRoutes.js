@@ -12,4 +12,6 @@ router.post('/shoppinglist', newShoppingList_post);
 
 router.delete('/shoppinglist', removeShoppingList_delete);
 
+router.patch('/shoppinglist', (req, res) => {});
+
 module.exports = router;

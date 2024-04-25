@@ -1,6 +1,5 @@
 const User = require('../model/User');
 const { ShoppingList } = require('../model/ShoppingList');
-
 const errorHandler = require('../middleware/errorHandler');
 
 module.exports.newShoppingList_post = async (req, res, next) => {
@@ -14,7 +13,7 @@ module.exports.newShoppingList_post = async (req, res, next) => {
     }
     res.status(201).json({ message: 'Shopping list created', result });
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
     errorHandler(err, req, res);
   }
 };

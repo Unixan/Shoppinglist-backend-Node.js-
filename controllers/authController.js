@@ -1,5 +1,6 @@
 const User = require('../model/User');
 const errorHandler = require('../middleware/errorHandler');
+const bcrypt = require('bcrypt');
 
 module.exports.login_post = async (req, res) => {
   const { email, password } = req.body;
@@ -15,7 +16,13 @@ module.exports.login_post = async (req, res) => {
 module.exports.signup_post = async (req, res) => {
   const { email, userName, password } = req.body;
   try {
-    const user = await User.create({ email, userName, password });
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const user = await User.create({
+      email,
+      userName,
+      password: hashedPassword,
+    });
     res.status(201).json({ user });
   } catch (err) {
     console.log(err.message);

@@ -21,10 +21,20 @@ const productSchema = new mongoose.Schema({
     unique: true,
     sparse: true,
   },
-  nutritionalValues: {},
 });
+
+productSchema.statics.addItem = async function (product) {
+  const productToFind = await this.findOne({
+    barcode: product.barcode,
+  });
+
+  if (!productToFind) {
+    this.create(product);
+    return 'new item added';
+  }
+  return undefined;
+};
 
 const Product = mongoose.model('product', productSchema);
 
-module.exports = Product;
-module.exports.productSchema = productSchema;
+module.exports = { Product, productSchema };

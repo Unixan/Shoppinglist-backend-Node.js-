@@ -49,6 +49,18 @@ userSchema.statics.addShoppingList = async function (userId, name) {
   throw Error('userError');
 };
 
+userSchema.statics.addItemToList = async function (userId, listId, product) {
+  if (!validateId(userId) || !validateId(listId))
+    throw Error('ValidationError');
+  const user = await this.findById(userId);
+  if (!user) throw Error('userError');
+  const list = await user.shoppingLists.find((list) => list._id.equals(listId));
+  if (!list) throw Error('listError');
+  list.products.push({ ...product, quantity: 1, isDone: false });
+  await user.save();
+  return 'Item added';
+};
+
 userSchema.statics.deleteUser = async function (userId) {
   if (!validateId(userId)) throw Error('ValidationError');
   const user = await this.findById(userId);
@@ -80,9 +92,8 @@ userSchema.statics.deleteShoppingList = async function (userId, listId) {
       user.shoppingLists.splice(index, 1);
       await user.save();
       return 'Shoppinglist deleted';
-    } else {
-      throw Error('listError');
     }
+    throw Error('listError');
   }
   throw Error('userError');
 };

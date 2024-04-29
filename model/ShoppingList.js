@@ -29,6 +29,21 @@ shoppingListSchema.statics.addShoppingList = async function (userId, name) {
   throw Error("Couldn't create list");
 };
 
+shoppingListSchema.statics.addItemToList = async function (
+  userId,
+  listId,
+  product
+) {
+  if (!validateId(userId) || !validateId(listId))
+    throw Error('ValidationError');
+  const list = await this.findOne({ _id: listId });
+  if (!list) throw Error('listError');
+  if (!list.users.includes(userId)) throw Error('userError');
+  list.products.push({ ...product, quantity: 1, isDone: false });
+  await list.save();
+  return 'Item added';
+};
+
 shoppingListSchema.statics.deleteShoppingList = async function (
   userId,
   listId
@@ -40,7 +55,7 @@ shoppingListSchema.statics.deleteShoppingList = async function (
   if (list) {
     if (list.users.includes(userId)) {
       await this.deleteOne({ _id: listId });
-      return 'List deleted';
+      return 'List ' + list.name + ' deleted';
     } else {
       throw Error('userError');
     }

@@ -52,16 +52,10 @@ shoppingListSchema.statics.deleteShoppingList = async function (
     throw Error('ValidationError');
   }
   const list = await this.findOne({ _id: listId });
-  if (list) {
-    if (list.users.includes(userId)) {
-      await this.deleteOne({ _id: listId });
-      return 'List ' + list.name + ' deleted';
-    } else {
-      throw Error('userError');
-    }
-  } else {
-    throw Error('listError');
-  }
+  if (!list) throw Error('listError');
+  if (!list.users.includes(userId)) throw Error('userError');
+  await this.deleteOne({ _id: listId });
+  return 'List ' + list.name + ' deleted';
 };
 
 const validateId = (id) => {

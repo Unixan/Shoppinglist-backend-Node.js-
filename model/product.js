@@ -27,12 +27,9 @@ productSchema.statics.addItem = async function (product) {
   const productToFind = await this.findOne({
     barcode: product.barcode,
   });
-
-  if (!productToFind) {
-    this.create(product);
-    return 'new item added';
-  }
-  return undefined;
+  if (productToFind) return undefined;
+  this.create(product);
+  return 'new item added';
 };
 
 const Product = mongoose.model('product', productSchema);

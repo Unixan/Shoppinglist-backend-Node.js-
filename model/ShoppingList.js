@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { productSchema } = require('./Product');
 const {
-  findProduct,
   validateId,
   validateListAndUser,
 } = require('../middleware/logisticsMethods');
@@ -66,17 +65,18 @@ shoppingListSchema.statics.removeItemFromList = async function (
   listId,
   productId
 ) {
-  if (!validateId(userId) || validateId(userId)) throw Error('ValidationError');
+  if (!validateId(userId) || !validateId(userId))
+    throw Error('ValidationError');
   const list = await this.findOne({ _id: listId });
   if ((valid = validateListAndUser(list, userId))) throw Error(valid);
   const productIndex = list.products.findIndex(
     (product) => product._id.toString() === productId
   );
-  console.log(productIndex);
   if (productIndex === -1) throw Error('productNotFoundError');
-  list.products.splice(productIndex, 1);
-  result = await list.save();
-  console.log(result);
+  const item = list.products.splice(productIndex, 1);
+  console.log(item);
+  await list.save();
+  return item[0].quantity + ' ' + item[0].name + ' removed successfully';
 };
 
 const ShoppingList = mongoose.model('shoppingList', shoppingListSchema);

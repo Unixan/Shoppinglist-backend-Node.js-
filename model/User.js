@@ -66,7 +66,7 @@ userSchema.statics.removeItemFromList = async function (
   listId,
   productId
 ) {
-  console.log(userId, listId, isPrivate, productId);
+  console.log(userId, listId, productId);
 };
 
 userSchema.statics.deleteUser = async function (userId) {

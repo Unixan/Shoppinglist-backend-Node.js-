@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 const { productSchema } = require('./Product');
+const {
+  findProduct,
+  validateId,
+  validateListAndUser,
+} = require('../middleware/logisticsMethods');
 
 const shoppingListSchema = new mongoose.Schema({
   name: {
@@ -29,21 +34,6 @@ shoppingListSchema.statics.addShoppingList = async function (userId, name) {
   throw Error("Couldn't create list");
 };
 
-shoppingListSchema.statics.addItemToList = async function (
-  userId,
-  listId,
-  product
-) {
-  if (!validateId(userId) || !validateId(listId))
-    throw Error('ValidationError');
-  const list = await this.findOne({ _id: listId });
-  if (!list) throw Error('listError');
-  if (!list.users.includes(userId)) throw Error('userError');
-  list.products.push({ ...product, quantity: 1, isDone: false });
-  await list.save();
-  return 'Item added';
-};
-
 shoppingListSchema.statics.deleteShoppingList = async function (
   userId,
   listId
@@ -52,14 +42,41 @@ shoppingListSchema.statics.deleteShoppingList = async function (
     throw Error('ValidationError');
   }
   const list = await this.findOne({ _id: listId });
-  if (!list) throw Error('listError');
-  if (!list.users.includes(userId)) throw Error('userError');
+  if ((valid = validateListAndUser(list, userId))) throw Error(valid);
   await this.deleteOne({ _id: listId });
   return 'List ' + list.name + ' deleted';
 };
 
-const validateId = (id) => {
-  return mongoose.Types.ObjectId.isValid(id);
+shoppingListSchema.statics.addItemToList = async function (
+  userId,
+  listId,
+  product
+) {
+  if (!validateId(userId) || !validateId(listId))
+    throw Error('ValidationError');
+  const list = await this.findOne({ _id: listId });
+  if ((valid = validateListAndUser(list, userId))) throw Error(valid);
+  list.products.push({ ...product, quantity: 1, isDone: false });
+  await list.save();
+  return 'Item added';
+};
+
+shoppingListSchema.statics.removeItemFromList = async function (
+  userId,
+  listId,
+  productId
+) {
+  if (!validateId(userId) || validateId(userId)) throw Error('ValidationError');
+  const list = await this.findOne({ _id: listId });
+  if ((valid = validateListAndUser(list, userId))) throw Error(valid);
+  const productIndex = list.products.findIndex(
+    (product) => product._id.toString() === productId
+  );
+  console.log(productIndex);
+  if (productIndex === -1) throw Error('productNotFoundError');
+  list.products.splice(productIndex, 1);
+  result = await list.save();
+  console.log(result);
 };
 
 const ShoppingList = mongoose.model('shoppingList', shoppingListSchema);

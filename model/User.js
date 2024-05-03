@@ -61,6 +61,14 @@ userSchema.statics.addItemToList = async function (userId, listId, product) {
   return 'Item added';
 };
 
+userSchema.statics.removeItemFromList = async function (
+  userId,
+  listId,
+  productId
+) {
+  console.log(userId, listId, isPrivate, productId);
+};
+
 userSchema.statics.deleteUser = async function (userId) {
   if (!validateId(userId)) throw Error('ValidationError');
   const user = await this.findById(userId);
